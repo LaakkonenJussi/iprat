@@ -1,12 +1,14 @@
 #!/bin/bash
 
-OUTFILE="privacy_risk_result.csv"
+if [ -z "$1" ] ; then INFILE="input.csv" ; else INFILE="$1" ; fi
+if [ -z "$2" ] ; then OUTFILE="privacy_risk_result.csv" ; else OUTFILE="$2" ; fi
+if [ -z "$3" ] ; then SEP=':' ; else SEP="$3" ; fi
 
 if [ -f "$OUTFILE" ] ; then rm "$OUTFILE" ; fi
 
 I=1
 
-echo "\" \",\" \",\"ATT\",\"PRD\",\"DAC\",\"ASA\",\"ASR\",\"DAA\",\"DAQ\",\"DAS\",\"DST\",\"DIF\",\"DAV\",\"UDM\",\"DML\",\"AMP\",\"ATG\",\"ASV\",\"IMP\",\"LH\",\"PR\" >> $OUTFILE
+echo "\" \",\" \",\"ATT\",\"PRD\",\"DAC\",\"ASA\",\"ASR\",\"DAA\",\"DAQ\",\"DAS\",\"DST\",\"DIF\",\"DAV\",\"UDM\",\"DML\",\"AMP\",\"ATG\",\"ASV\",\"IMP\",\"LH\",\"PR\"" >> $OUTFILE
 echo -n "\"Id\",\"Name\"" >> $OUTFILE
 
 while [ $I -lt 19 ] ; do
@@ -15,12 +17,14 @@ while [ $I -lt 19 ] ; do
 done
 echo ",19" >> $OUTFILE
 
-cat $1 |while read line; do
-	ID=$(echo "$line"|cut -d':' -f1)
-	NAME=$(echo "$line"|cut -d':' -f2)
-	VALUES=$(echo "$line"|cut -d':' -f3)
+if [ ! -x validator ] ; then make csv ; fi
+
+cat "$INFILE" |while read -r line; do
+	ID=$(echo "$line"|cut -d$SEP -f1)
+	NAME=$(echo "$line"|cut -d$SEP -f2)
+	VALUES=$(echo "$line"|cut -d$SEP -f3)
 	
 	echo -n "\"$ID\",\"$NAME\"," >> $OUTFILE
-		
+
 	./validator -v "$VALUES" >> $OUTFILE
 done
