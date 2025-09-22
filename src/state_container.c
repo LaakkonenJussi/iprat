@@ -124,8 +124,11 @@ int check_state_history_repetition(state_container* container) {
 }
 
 void print_state(state_container* container) {
-	
-#ifdef __NO_ABBR
+
+#ifdef __CSV
+	for(int i = 0; i < VALUES ; i++) printf("%u%s", container->state[i], i+1 == VALUES ? "" : ",");
+	return;
+#elif __NO_ABBR
 	printf("\n---------------------------------------------\n");
 #else
 	printf("\n");
@@ -142,16 +145,29 @@ void print_state(state_container* container) {
 }
 
 void print_state_history(state_container* container) {
+
+#ifdef __CSV
+	return;
+#endif
+	
 	for(int i = HISTORY-1, h = 0; i >= 0; i--) {
 		if(container->history[i][0] > 0) {
 #ifdef __NO_ABBR
 			h++;
 			printf("  %.2d ",h);
 #else
-			printf("      %.2d c%.2d: ",i+1,container->last_change_position_history[i] == -1 ? 0 : container->last_change_position_history[i]);
+			printf("      %.2d c%.2d: ",
+					i+1,
+					container->last_change_position_history[i] == -1 ? 0 :
+						container->last_change_position_history[i]);
 #endif
-			for(int j = 0; j < VALUES; j++) printf("%u ",container->history[i][j]);
-			printf("\n");
+
+			for(int j = 0; j < VALUES; j++)
+			{
+				printf("%u%s", container->history[i][j],
+						j+1 == VALUES ? "\n" : " ");
+			}
+			//printf("\n");
 		}
 	}
 }

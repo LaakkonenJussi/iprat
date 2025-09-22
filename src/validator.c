@@ -197,7 +197,14 @@ int main(int argc, char* argv[]) {
 #ifndef __NO_ABBR
 			print_state(state);
 #endif
+
+
+#ifndef __CSV
 			printf("Impact:%hd\nLikelihood:%hd\nRisk:%hd\n",state->state[IMPACT],state->state[LIKELIHOOD], calc_privacy_risk(state->state) );
+#else
+			print_state(state);
+			printf(",%hd\n",calc_privacy_risk(state->state));
+#endif
 			
 			break;
 		case CREATE_STATES:

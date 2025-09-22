@@ -13,7 +13,6 @@
 #define VALUES_TOTAL VALUES+1
 #define ASSESSABLE 10
 
-#define __NO_ABBR
 
 
 #endif
